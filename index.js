@@ -21,13 +21,9 @@ module.exports = (callback, options) => {
   const dispatchCallback = (dt, stack) => setImmediate(callback, dt, stack)
 
   function init (asyncId, type, triggerAsyncId, resource) {
-    let stack = null
-    try {
-      throw Error()
-    } catch (e) {
-      stack = e.stack
-    }
-    cache.set(asyncId, {asyncId, type, stack})
+    const e = {}
+    Error.captureStackTrace(e)
+    cache.set(asyncId, {asyncId, type, stack: e.stack})
   }
 
   function before (asyncId) {
