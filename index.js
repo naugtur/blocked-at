@@ -27,11 +27,14 @@ module.exports = (callback, options) => {
   }
 
   function before (asyncId) {
-    cache.get(asyncId).t0 = hrtime()
+    const cached = cache.get(asyncId)
+    if (!cached) { return }
+    cached.t0 = hrtime()
   }
 
   function after (asyncId) {
     const cached = cache.get(asyncId)
+    if (!cached) { return }
     const t1 = hrtime()
     const dt = (t1 - cached.t0) / 1000
       // process._rawDebug(dt > options.threshold, options.threshold, dt, cached)

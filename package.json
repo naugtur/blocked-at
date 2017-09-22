@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/naugtur/blocked-at#readme",
   "devDependencies": {
+    "pre-commit": "^1.2.2",
     "standard": "^10.0.3"
   }
 }
