@@ -1,6 +1,6 @@
 {
   "name": "blocked-at",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Detects node eventloop block and reports where it started",
   "main": "index.js",
   "scripts": {
