@@ -6,7 +6,7 @@ const cache = new Map()// WeakMap maybe?
 function cleanStack (stack) {
   const frames = stack.split('\n')
   let i = 0
-  while (i < 5 && (i < 2 || frames[0].includes('(async_hooks.js'))) {
+  while (i < 5 && frames[0] && (i < 2 || frames[0].includes('(async_hooks.js'))) {
     frames.shift()
     i++
   }
