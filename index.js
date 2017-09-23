@@ -20,7 +20,7 @@ module.exports = (callback, options) => {
   const asyncHook = asyncHooks.createHook({ init, before, after })
   const dispatchCallback = (dt, stack) => setImmediate(callback, dt, stack)
 
-  const debugLog = (message, data) => (options.debug && console.trace(message, data))
+  const debugLog = (title, message) => (options.debug && process._rawDebug(title, message))
 
   function init (asyncId, type, triggerAsyncId, resource) {
     const e = {}
