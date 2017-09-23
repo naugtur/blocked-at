@@ -20,25 +20,31 @@ module.exports = (callback, options) => {
   const asyncHook = asyncHooks.createHook({ init, before, after })
   const dispatchCallback = (dt, stack) => setImmediate(callback, dt, stack)
 
+  const debugLog = (message, data) => (options.debug && console.trace(message, data))
+
   function init (asyncId, type, triggerAsyncId, resource) {
     const e = {}
     Error.captureStackTrace(e)
+    debugLog('init', asyncId)
     cache.set(asyncId, {asyncId, type, stack: e.stack})
   }
 
   function before (asyncId) {
+    debugLog('before', asyncId)
     const cached = cache.get(asyncId)
     if (!cached) { return }
     cached.t0 = hrtime()
   }
 
   function after (asyncId) {
+    debugLog('after', asyncId)
     const cached = cache.get(asyncId)
     if (!cached) { return }
     const t1 = hrtime()
     const dt = (t1 - cached.t0) / 1000
       // process._rawDebug(dt > options.threshold, options.threshold, dt, cached)
     if (dt > options.threshold) {
+      debugLog('stack', cached.stack)
       dispatchCallback(dt, cleanStack(cached.stack))
     }
   }
