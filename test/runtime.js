@@ -2,7 +2,7 @@
 const blocked = require('../')
 const slowfunc = require('./slowfunc')
 
-const assert = require('assert')
+setTimeout(slowfunc, 10) //will not run init in blocked, but all other hooks get triggered
 
 blocked((time, stack) => {
   console.log(time, stack)
