@@ -10,6 +10,14 @@ Detects slow synchronous execution and reports where it started.
 $ npm install blocked-at
 ```
 
+## Usage
+
+```js
+blocked((time, stack) => {
+  console.log(`Blocked for ${time}ms, operation started here:`, stack)
+})
+```
+
 ## Description
 
   The `blocked()` function reports every value over the configured threshold (defaults to 20ms). Usage is similar to [`blocked`](https://www.npmjs.com/package/blocked) but the detection mechanism is different, to allow pointing to the slow function.
