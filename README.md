@@ -35,7 +35,14 @@ const { stop } = blocked(fn, options)
 ```
 
 - fn: The callback function to execute when a function called asynchronously ran more than threshold. Two arguments are passed: time it measured and an array of stack frames (callstack)
-- options: _Optional._  `threshold` option is supported for parity with [`blocked`](https://www.npmjs.com/package/blocked)
+- options: _Optional._
+
+|option|default|description|
+|---|---|---|
+|`trimFalsePositives`|*falsy*| eliminate a class of false positives (experimental) |
+|`threshold`| *20* | minimum miliseconds of blockage to report. supported for parity with [`blocked`](https://www.npmjs.com/package/blocked)|
+|`debug`| *falsy* | print debug data to console |
+
 Returns: An object with `stop` method. `stop()` will disable the async hooks set up by this library and callback will no longer be called.
 
 ## Using the stack trace
