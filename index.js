@@ -14,6 +14,7 @@ function cleanStack (stack) {
 }
 
 module.exports = (callback, options) => {
+  let continuityId
   options = options || {}
   options.threshold = (options.threshold || 20)
   Error.stackTraceLimit = Infinity
@@ -31,6 +32,9 @@ module.exports = (callback, options) => {
 
   function before (asyncId) {
     debugLog('before', asyncId)
+    if (options.trimFalsePositives) {
+      continuityId = asyncId
+    }
     const cached = cache.get(asyncId)
     if (!cached) { return }
     cached.t0 = hrtime()
@@ -38,6 +42,10 @@ module.exports = (callback, options) => {
 
   function after (asyncId) {
     debugLog('after', asyncId)
+    if (options.trimFalsePositives && continuityId !== asyncId) {
+      // drop for interuptions
+      return
+    }
     const cached = cache.get(asyncId)
     if (!cached) { return }
     const t1 = hrtime()
