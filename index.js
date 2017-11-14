@@ -57,10 +57,10 @@ module.exports = (callback, options) => {
     }
   }
 
-  function destroy(asyncId) {
+  function destroy (asyncId) {
     cache.delete(asyncId)
   }
-  
+
   asyncHook.enable()
   return {
     stop: asyncHook.disable
