@@ -18,7 +18,7 @@ module.exports = (callback, options) => {
   options = options || {}
   options.threshold = (options.threshold || 20)
   Error.stackTraceLimit = Infinity
-  const asyncHook = asyncHooks.createHook({ init, before, after })
+  const asyncHook = asyncHooks.createHook({ init, before, after, destroy })
   const dispatchCallback = (dt, stack) => setImmediate(callback, dt, stack)
 
   const debugLog = (title, message) => (options.debug && process._rawDebug(title, message))
@@ -55,9 +55,12 @@ module.exports = (callback, options) => {
       debugLog('stack', cached.stack)
       dispatchCallback(dt, cleanStack(cached.stack))
     }
-    cache.delete(asyncId)
   }
 
+  function destroy(asyncId) {
+    cache.delete(asyncId)
+  }
+  
   asyncHook.enable()
   return {
     stop: asyncHook.disable
