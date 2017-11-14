@@ -55,6 +55,7 @@ module.exports = (callback, options) => {
       debugLog('stack', cached.stack)
       dispatchCallback(dt, cleanStack(cached.stack))
     }
+    cache.delete(asyncId)
   }
 
   asyncHook.enable()
