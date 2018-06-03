@@ -3,14 +3,16 @@ const asyncHooks = require('async_hooks')
 
 const cache = new Map()// WeakMap maybe?
 
+const asyncHooksRegEx = /\((internal\/)?async_hooks\.js:/
+
 function cleanStack (stack) {
   const frames = stack.split('\n')
-  let i = 0
-  while (i < 5 && frames[0] && (i < 2 || frames[0].includes('(async_hooks.js'))) {
-    frames.shift()
-    i++
+  // this part is opinionated, but it's here to avoid confusing people with internals
+  let i = frames.length - 1
+  while (i && !asyncHooksRegEx.test(frames[i])) {
+    i--
   }
-  return frames
+  return frames.slice(i + 1, stack.length - 1)
 }
 
 module.exports = (callback, options) => {
