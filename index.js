@@ -65,7 +65,9 @@ module.exports = (callback, options) => {
 
   asyncHook.enable()
   return {
-    stop: asyncHook.disable
+    stop: () => {
+      asyncHook.disable();
+    }
   }
 }
 
