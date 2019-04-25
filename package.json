@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node ./test/index.js && node ./test/runtime.js",
+    "test:rd": "node ./test/resource-details.js",
     "start": "standard --fix"
   },
   "repository": {

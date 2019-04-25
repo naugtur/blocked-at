@@ -10,7 +10,7 @@ module.exports = function start () {
 
   server.listen(0, 'localhost', function () {
     const addr = server.address()
-    http.get(`http://${addr.address}:${addr.port}`, function (res) {
+    http.get(`http://${addr.address}:${addr.port}/some-url`, function (res) {
       res.resume()
       res.once('end', server.close.bind(server))
     })
