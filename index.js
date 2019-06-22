@@ -2,6 +2,7 @@
 const asyncHooks = require('async_hooks')
 
 const cache = new Map()// WeakMap maybe?
+let resourcesCount = 0
 
 const asyncHooksRegEx = /\((internal\/)?async_hooks\.js:/
 
@@ -19,9 +20,9 @@ module.exports = (callback, options) => {
   let continuityId
   options = options || {}
   options.threshold = (options.threshold || 20)
+  options.maxResourcesSize = (options.maxResourcesSize || 0)
   Error.stackTraceLimit = Infinity
   const asyncHook = asyncHooks.createHook({ init, before, after, destroy })
-  const dispatchCallback = (dt, stack) => setImmediate(callback, dt, stack)
 
   const debugLog = (title, message) => (options.debug && process._rawDebug(title, message))
 
@@ -29,7 +30,12 @@ module.exports = (callback, options) => {
     const e = {}
     Error.captureStackTrace(e)
     debugLog('init', asyncId)
-    cache.set(asyncId, {asyncId, type, stack: e.stack})
+    const cached = {asyncId, type, stack: e.stack}
+    if (options.maxResourcesSize > resourcesCount) {
+      cached.resource = resource
+      resourcesCount += 1
+    }
+    cache.set(asyncId, cached)
   }
 
   function before (asyncId) {
@@ -55,7 +61,11 @@ module.exports = (callback, options) => {
       // process._rawDebug(dt > options.threshold, options.threshold, dt, cached)
     if (dt > options.threshold) {
       debugLog('stack', cached.stack)
-      dispatchCallback(dt, cleanStack(cached.stack))
+      callback(dt, cleanStack(cached.stack), {
+        type: cached.type,
+        resource: cached.resource
+      })
+      cached.resource = undefined
     }
   }
 

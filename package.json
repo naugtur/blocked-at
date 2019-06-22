@@ -4,7 +4,7 @@
   "description": "Detects node eventloop block and reports where it started",
   "main": "index.js",
   "scripts": {
-    "test": "node ./test/index.js && node ./test/runtime.js",
+    "test": "node ./test/index.js && node ./test/runtime.js && node ./test/resources.js",
     "start": "standard --fix"
   },
   "repository": {
