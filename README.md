@@ -56,10 +56,13 @@ In some cases your code is not directly called and tracking it down will still b
 blocked((time, stack, {type, resource}) => {
   console.log(`Blocked for ${time}ms, operation started here:`, stack)
   if (type === 'HTTPPARSER' && resource) {
+    // resource structure assumes Node 10.x
     console.log(`URL related to blocking operation: ${resource.resource.incoming.url}`)
   }
 }, {maxResourcesSize: 100})
 ```
+
+Note that resource structure is a subject to change and may vary between Node versions.
 
  After you've identified a problematic URL, you can wrap your handlers' code in `setImmediate` which should make the stack point to something meaningful.
 
