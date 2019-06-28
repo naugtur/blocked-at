@@ -65,11 +65,15 @@ module.exports = (callback, options) => {
         type: cached.type,
         resource: cached.resource
       })
-      cached.resource = undefined
     }
   }
 
   function destroy (asyncId) {
+    const cached = cache.get(asyncId)
+    if (!cached) { return }
+    if (cached.resource) {
+      resourcesCount -= 1
+    }
     cache.delete(asyncId)
   }
 
