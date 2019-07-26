@@ -2,8 +2,6 @@
 
 Detects slow synchronous execution and reports where it started.
 
-> `blocked-at` uses Async Hooks. There's a performance cost to enabling them. It's recommended to detect blocking exists with something without the performance overhead and use blocked-at in testing environment to pinpoint where the slowdown happens.
-> Rule of thumb is you should not be running this in production unless desperate.
 
 ## Installation
 
@@ -29,6 +27,9 @@ blocked((time, stack) => {
   Stack trace will point to the beginning of an asynchronously called function that contained the long operation.
 
   Run tests (`npm test`) to see examples.
+
+> There's a performance cost to enabling Async Hooks. It's recommended to detect blocking exists with something without the performance overhead and use blocked-at in testing environment to pinpoint where the slowdown happens.
+> Rule of thumb is you should not be running this in production unless desperate.
 
 ## Params and return value
 
