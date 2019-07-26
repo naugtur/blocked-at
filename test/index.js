@@ -13,7 +13,7 @@ let result = []
 blocked((time, stack) => {
   result = result.concat(stack)
   console.log(time, stack)
-}, {trimFalsePositives: true})
+}, { trimFalsePositives: true })
 
 setImmediate(slowfunc)
 setImmediate(case1)

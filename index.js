@@ -29,7 +29,7 @@ module.exports = (callback, options) => {
     const e = {}
     Error.captureStackTrace(e)
     debugLog('init', asyncId)
-    cache.set(asyncId, {asyncId, type, stack: e.stack})
+    cache.set(asyncId, { asyncId, type, stack: e.stack })
   }
 
   function before (asyncId) {
@@ -52,7 +52,7 @@ module.exports = (callback, options) => {
     if (!cached) { return }
     const t1 = hrtime()
     const dt = (t1 - cached.t0) / 1000
-      // process._rawDebug(dt > options.threshold, options.threshold, dt, cached)
+    // process._rawDebug(dt > options.threshold, options.threshold, dt, cached)
     if (dt > options.threshold) {
       debugLog('stack', cached.stack)
       dispatchCallback(dt, cleanStack(cached.stack))
@@ -66,7 +66,7 @@ module.exports = (callback, options) => {
   asyncHook.enable()
   return {
     stop: () => {
-      asyncHook.disable();
+      asyncHook.disable()
     }
   }
 }
