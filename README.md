@@ -46,11 +46,15 @@ const { stop } = blocked(fn, options)
 
 Returns: An object with `stop` method. `stop()` will disable the async hooks set up by this library and callback will no longer be called.
 
-## Using the stack trace and resource details
+## Using the stack trace
 
 The stack trace is pointing to a start of a function called asynchronously, so in most cases the first stack frame pointing to your code is where you need to start analyzing all synchronous operations to find the slow one.
 
-In some cases your code is not directly called and tracking it down will still be difficult. See how the http test case produces a stack pointing to `Server.connectionListener` as the slow function, because everything inside of it is synchronously called. You can try to narrow down your search by using `resourcesCap` option and inspecting an associated [resource](https://nodejs.org/api/async_hooks.html#async_hooks_resource):
+In some cases your code is not directly called and tracking it down will still be difficult. See how the http test case produces a stack pointing to `Server.connectionListener` as the slow function, because everything inside of it is synchronously called. You can always wrap your handlers' code in `setImmediate` if you become desperate.
+
+## Using the resource details
+
+If you can't narrow down a blocking call to a particular function, you can try to use `resourcesCap` option and inspect an associated [resource](https://nodejs.org/api/async_hooks.html#async_hooks_resource):
 
  ```js
 blocked((time, stack, {type, resource}) => {
@@ -67,7 +71,7 @@ Note that resource structure is a subject to change and may vary between Node ve
  After you've identified a problematic URL, you can wrap your handlers' code in `setImmediate` which should make the stack point to something meaningful.
 
  **Warning**: Exposing resource details has a significant memory overhead, to the point of crashing the entire application due to exceeding heap limit. This is why `resourcesCap` is a number -
- it specifies the maximum amount of resources with details kept in memory. If this number is exceeded at runtime, you'll still get the information about blocked event loop, but details will be `undefined`.
+ it specifies the maximum amount of resources with details kept in memory. If this number is exceeded at runtime, you'll still get the information about blocked event loop, but resource will be `undefined`.
  Adjust it according to your needs. You can start arbitrarily with a `100` and decrease it if it's consuming too much memory or increase it if you don't see the details when you need them.
 
 
