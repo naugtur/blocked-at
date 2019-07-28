@@ -1,8 +1,13 @@
 'use strict'
+const assert = require('assert')
 const blocked = require('..')
 const http = require('./cases/http')
 
- blocked((time, stack, {type, resource}) => {
+ blocked((time, stack, details) => {
+   assert(details && typeof details === 'object', 'Resource details object should be present')
+   const {type, resource} = details
+   assert(typeof type === 'string', 'Resource details should contain type string')
+   assert(resource && typeof resource === 'object', 'Resource details should contain resource object')
    // Node 10.x
    if (type === 'HTTPPARSER') {
     console.log(type, resource.incoming.url)
