@@ -20,7 +20,7 @@ module.exports = (callback, options) => {
   let continuityId
   options = options || {}
   options.threshold = (options.threshold || 20)
-  options.maxResourcesSize = (options.maxResourcesSize || 0)
+  options.resourcesCap = (options.resourcesCap || 0)
   Error.stackTraceLimit = Infinity
   const asyncHook = asyncHooks.createHook({ init, before, after, destroy })
 
@@ -31,7 +31,7 @@ module.exports = (callback, options) => {
     Error.captureStackTrace(e)
     debugLog('init', asyncId)
     const cached = {asyncId, type, stack: e.stack}
-    if (options.maxResourcesSize > resourcesCount) {
+    if (options.resourcesCap > resourcesCount) {
       cached.resource = resource
       resourcesCount += 1
     }

@@ -18,6 +18,6 @@ const http = require('./cases/http')
     console.log(type, resource.socket.parser.incoming.url)
     return
    }
-}, {maxResourcesSize: 100})
+}, {resourcesCap: 100})
 
  setImmediate(http)
