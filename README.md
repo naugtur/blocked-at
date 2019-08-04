@@ -45,6 +45,7 @@ const { stop } = blocked(fn, options)
 |---|---|---|
 |`trimFalsePositives`|*falsy*| eliminate a class of false positives (experimental) |
 |`threshold`| *20* | minimum miliseconds of blockage to report. supported for parity with [`blocked`](https://www.npmjs.com/package/blocked)|
+|`resourcesCap`| *undefined* | maximum amount of stack traces with resource details kept in memory. Resources are not saved by default. see the next section for details |
 |`debug`| *falsy* | print debug data to console |
 
 Returns: An object with `stop` method. `stop()` will disable the async hooks set up by this library and callback will no longer be called.
@@ -53,7 +54,28 @@ Returns: An object with `stop` method. `stop()` will disable the async hooks set
 
 The stack trace is pointing to a start of a function called asynchronously, so in most cases the first stack frame pointing to your code is where you need to start analyzing all synchronous operations to find the slow one.
 
-In some cases your code is not directly called and tracking it down will still be difficult. See how the http test case produces a stack pointing to `Server.connectionListener` as the slow function, because everything inside of it is synchronously called. You can always wrap your handlers' code in `setImmediate` if you become desperate.
+In some cases your code is not directly called and tracking it down will still be difficult. See how the http test case produces a stack pointing to `Server.connectionListener` as the slow function, because everything inside of it is synchronously called. You can always wrap your handlers' code in `setImmediate` if you become desperate. Or use resources.
+
+## Using the resource details
+
+If you can't narrow down a blocking call to a particular function, you can try to use `resourcesCap` option and inspect an associated [resource](https://nodejs.org/api/async_hooks.html#async_hooks_resource):
+
+ ```js
+blocked((time, stack, {type, resource}) => {
+  console.log(`Blocked for ${time}ms, operation started here:`, stack)
+  if (type === 'HTTPPARSER' && resource) {
+    // resource structure in this example assumes Node 10.x
+    console.log(`URL related to blocking operation: ${resource.resource.incoming.url}`)
+  }
+}, {resourcesCap: 100})
+```
+
+Note that resource structure is a subject to change and may vary between Node versions.
+
+ **Warning**: Exposing resource details has a significant memory overhead, to the point of crashing the entire application due to exceeding heap limit. This is why `resourcesCap` is a number -
+ it specifies the maximum amount of resources with details kept in memory. If this number is exceeded at runtime, you'll still get the information about blocked event loop, but resource will be `undefined`.
+ Adjust it according to your needs. You can start arbitrarily with a `100` and decrease it if it's consuming too much memory or increase it if you don't see the details when you need them.
+
 
 # License
 
