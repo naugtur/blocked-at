@@ -1,4 +1,4 @@
-# blocked-at [![Build Status](https://travis-ci.org/naugtur/blocked-at.svg?branch=master)](https://travis-ci.org/naugtur/blocked-at) [![Greenkeeper badge](https://badges.greenkeeper.io/naugtur/blocked-at.svg)](https://greenkeeper.io/)
+# blocked-at [![Build Status](https://travis-ci.org/naugtur/blocked-at.svg?branch=master)](https://travis-ci.org/naugtur/blocked-at) 
 
 Detects slow synchronous execution and reports where it started.
 
