@@ -4,13 +4,18 @@ const asyncHooks = require('async_hooks')
 const cache = new Map()// WeakMap maybe?
 let resourcesCount = 0
 
-const asyncHooksRegEx = /\((internal\/)?async_hooks\.js:/
+const asyncHooksRegExNode8 = /\((internal\/)?async_hooks\.js:/
+const asyncHooksRegExNode16 = /node:internal\/async_hooks:/
+
+function isInternalStacktrace (frames, i) {
+  return !asyncHooksRegExNode16.test(frames[i]) && !asyncHooksRegExNode8.test(frames[i])
+}
 
 function cleanStack (stack) {
   const frames = stack.split('\n')
   // this part is opinionated, but it's here to avoid confusing people with internals
   let i = frames.length - 1
-  while (i && !asyncHooksRegEx.test(frames[i])) {
+  while (i && isInternalStacktrace(frames, i)) {
     i--
   }
   return frames.slice(i + 1, stack.length - 1)
